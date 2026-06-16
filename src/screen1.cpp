@@ -17,6 +17,9 @@ static lv_obj_t * bar_recStatus = nullptr;
 static lv_obj_t * symbol_rec = nullptr;
 static lv_anim_t anim_bar;
 
+static lv_obj_t *scr2 = nullptr;
+static lv_obj_t * ui_ImgButton1 = nullptr;
+
 //---------------------------------------------------ANIMATIONS-------------------------------------------------
 //-------------------------------------------ANIMATION DE LA BARRE D'ENREGISTREMENT-----------------------------
 void demarrer_animation_barre() {
@@ -120,6 +123,15 @@ void screen1_disableUSBSwitch(){
     lv_label_set_text(labelUSB, "USB non connect\xC3\xA9");
 }
 // ──------------- EVENTS Callbacks ────────────────────────────────────────────────────
+void ui_event_ImgButton1(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+    if(event_code == LV_EVENT_CLICKED) {
+        //_ui_screen_change(&scr2, LV_SCR_LOAD_ANIM_MOVE_LEFT, 500, 200, &screen2_create);
+    }
+}
+
 //----------------------------------EVENT POUR LE TRANSFERT USB---------------------------------------
 static void switch_event_cb(lv_event_t *e) {
     lv_obj_t *sw = lv_event_get_target(e);
@@ -204,8 +216,10 @@ static void apply_switch_style(lv_obj_t *sw) {
 // ── Point d'entrée public ────────────────────────────────────────
 void screen1_create(void) {
     lv_obj_t *scr = lv_scr_act();
+    lv_obj_clear_flag(scr, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_set_style_bg_img_src(scr, &ui_img_fond01_png, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    // Titre
+    /* Titre
 
     lv_obj_t *labelTitre = lv_label_create(scr);
     lv_label_set_text(labelTitre, "TRAXXAS");
@@ -213,7 +227,7 @@ void screen1_create(void) {
     lv_obj_set_style_text_font(labelTitre, &metal_rocks_24, LV_PART_MAIN | LV_STATE_DEFAULT);
     //lv_obj_set_style_text_font (labelTitre, &lv_font_montserrat_20, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(labelTitre, lv_color_hex(0xFF0000),  LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa  (labelTitre, LV_OPA_COVER,            LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa  (labelTitre, LV_OPA_COVER,            LV_PART_MAIN | LV_STATE_DEFAULT);*/
 
 
     lv_obj_t *label = lv_label_create(scr);
@@ -226,6 +240,7 @@ void screen1_create(void) {
     labelUSB = label;
 
 
+
     // Switch 2 — grand, activé par défaut
     lv_obj_t *sw2 = lv_switch_create(scr);
     lv_obj_set_size(sw2, 100, 55);
@@ -235,10 +250,19 @@ void screen1_create(void) {
     lv_obj_add_event_cb(sw2, switch_event_cb, LV_EVENT_VALUE_CHANGED, (void*)label);
     swUSBStatus = sw2;
 
+    ui_ImgButton1 = lv_imgbtn_create(scr);
+    lv_imgbtn_set_src(ui_ImgButton1, LV_IMGBTN_STATE_RELEASED, NULL, &ui_img_button_rec_v3_off_png, NULL);
+    lv_imgbtn_set_src(ui_ImgButton1, LV_IMGBTN_STATE_PRESSED, NULL, &ui_img_button_rec_v3_on_png, NULL);
+    lv_obj_set_width(ui_ImgButton1, 300);
+    lv_obj_set_height(ui_ImgButton1, 60);
+    lv_obj_set_x(ui_ImgButton1, 0);
+    lv_obj_set_y(ui_ImgButton1, -47);
+    lv_obj_set_align(ui_ImgButton1, LV_ALIGN_CENTER);
+
     //--------------------------------BOUTON TOGGLE POUR L'ENREGISTREMENT----------------------------------
     ui_Button1 = lv_btn_create(scr);
     lv_obj_set_width(ui_Button1, 125);
-    lv_obj_set_height(ui_Button1, 54);
+    lv_obj_set_height(ui_Button1, 55);
     //lv_obj_set_x(ui_Button1, -50);
     //lv_obj_set_y(ui_Button1, 0);
     lv_obj_align(ui_Button1, LV_ALIGN_CENTER, -70, 0);
@@ -303,4 +327,13 @@ void screen1_create(void) {
     lv_obj_set_style_text_opa  (labelSaveButtonStatus, LV_OPA_COVER,            LV_PART_MAIN | LV_STATE_DEFAULT); 
     labelSaveButtonStatus_p = labelSaveButtonStatus;  
 
+
+    //declaration des events
+    lv_obj_add_event_cb(ui_ImgButton1, ui_event_ImgButton1, LV_EVENT_ALL, NULL);
+}
+
+void screen2_create(void){
+    scr2 = lv_scr_act();
+    lv_obj_clear_flag(scr2, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_set_style_bg_img_src(scr2, &ui_img_fond01_png, LV_PART_MAIN | LV_STATE_DEFAULT);
 }
